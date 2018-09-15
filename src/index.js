@@ -4,21 +4,26 @@
  */
 module.exports = function getLoveTrianglesCount(preferences = []) {
   let count = 0;
+  let excludedLovers = [];
   preferences.forEach((value, lover) => {
-    let whoHeLove = value - 1; 
-    let i = 0;
-    const apexesOfTriangle = [whoHeLove];
-    while (i < 2) {
-      const nextLover = preferences[whoHeLove] - 1;
-      if (!apexesOfTriangle.includes(nextLover)) {
-        apexesOfTriangle.push(nextLover);
-        whoHeLove = nextLover;
+    if (!excludedLovers.includes(lover)) {
+      let whoHeLove = value - 1; 
+      let i = 0;
+      const apexesOfTriangle = [lover];
+      while (i < 3) {
+        const nextLover = preferences[whoHeLove];
+        if (!apexesOfTriangle.includes(whoHeLove)) {
+          apexesOfTriangle.push(whoHeLove);
+          whoHeLove = nextLover - 1;
+        } else if (
+          apexesOfTriangle.length === 3 && whoHeLove === lover
+        ) {
+          excludedLovers.push(...apexesOfTriangle);
+          count++
+        }
+        i++;
       }
-      i++;
-    }
-    if (apexesOfTriangle.length === 3 && whoHeLove === value - 1) {
-      count++
-    }
+    }  
   });
   return count;
 };
